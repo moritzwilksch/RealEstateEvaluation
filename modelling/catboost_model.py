@@ -1,6 +1,7 @@
 # %%
 import pathlib
 import sys
+from typing import List, Tuple
 sys.path.append(str(pathlib.Path('..').resolve()))
 
 from matplotlib import pyplot as plt
@@ -15,9 +16,16 @@ root_path = "../"
 
 df = pd.read_csv(root_path + 'data/ISListingsBerlinBrb.csv')
 #df = df.fillna('NA')
+
+
 # %%
 from catboost import CatBoostRegressor
 
+df['tags'] = df['tags'].astype('string')
+def extract_tags(data: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
+    tags = df.tags.split(',', expand=True)
+    
+#%%
 cat_cols = ['postcode', 'quarter', 'city', 'balcony', 'barrier_free', 'builtin_kitchen', 'cellar', 'garden',
             'guest_toilet', 'lift', 'street', 'energy_certificate', 'energy_efficiency']
 
