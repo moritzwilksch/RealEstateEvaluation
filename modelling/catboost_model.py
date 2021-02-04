@@ -21,10 +21,24 @@ df = pd.read_csv(root_path + 'data/ISListingsBerlinBrb.csv')
 # %%
 from catboost import CatBoostRegressor
 
-df['tags'] = df['tags'].astype('string')
-def extract_tags(data: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
-    tags = df.tags.split(',', expand=True)
-    
+if False: # TAGS are useless: the attributes already exist
+    df['tags'] = df['tags'].astype('string')
+    df['tags'] = df['tags'].fillna('')
+
+    all_tags = set()
+    for _, tag in df.tags.iteritems():
+        if len(tag) > 0:
+            for item in tag.split(","):
+                all_tags.update((item, ))
+
+    #%%
+    for tag in all_tags:
+        col_name = tag.lower().replace("ä", 'ae').replace('ö', "oe").replace("ü", "ue").replace("/", "_").replace("-", "_")
+        df[col_name] = (df.tags.apply(lambda t: tag in t))
+
+
+
+
 #%%
 cat_cols = ['postcode', 'quarter', 'city', 'balcony', 'barrier_free', 'builtin_kitchen', 'cellar', 'garden',
             'guest_toilet', 'lift', 'street', 'energy_certificate', 'energy_efficiency']
