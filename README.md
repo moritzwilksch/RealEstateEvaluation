@@ -22,3 +22,7 @@ The whole data set is not publicly available, but looks like the following excer
 This data set is obviously not ideal: It is a snapshot of a single point in time and could be extended by also learning from historic listings that are not available anymore. It could be extended in size and level of detail (e.g. single appartment exposés). Unfortunately, there is no publicly available API.
 
 ## Approach
+
+
+## Experiments TBD
+- Compare neural net with categorical embeddings against net with OHE categories
