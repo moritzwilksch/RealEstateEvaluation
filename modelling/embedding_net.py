@@ -3,7 +3,6 @@ import enum
 import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import OrdinalEncoder
-from helpers.model_eval import eval_model
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
@@ -12,6 +11,7 @@ import pathlib
 import sys
 from typing import List, Tuple
 sys.path.append(str(pathlib.Path('..').resolve()))
+from helpers.model_eval import eval_model
 
 
 root_path = "../"
@@ -106,16 +106,20 @@ dense1 = tf.keras.layers.Dense(units=50, activation='relu', kernel_regularizer=t
 out = tf.keras.layers.Dense(units=1, activation='linear')(dense1)
 
 model = tf.keras.Model(inputs=[num_in, emb_in], outputs=[out])
-model.compile('adam', 'mean_squared_error')
+model.compile('adam', 'mean_squared_error', metrics=['mean_absolute_percentage_error'])
 
 #%%
+import time
 checkpointer = tf.keras.callbacks.ModelCheckpoint(root_path + ".modelcheckpoints", save_best_only=True, save_weights_only=True)
-hist = model.fit([xtrain_num, xtrain_cat], ytrain, validation_data=([xval_num, xval_cat], yval), epochs=20, callbacks=[checkpointer])
+tic = time.time()
+hist = model.fit([xtrain_num, xtrain_cat], ytrain, validation_data=([xval_num, xval_cat], yval), epochs=40, callbacks=[checkpointer])
+tac = time.time()
+print(f"Fit took {tac - tic:.1f} seconds!")
 #%%
 model.load_weights(root_path + ".modelcheckpoints")
 #model.load_weights(root_path + ".modelcheckpoints")
 #%%
-pd.DataFrame(hist.history).plot()
+pd.DataFrame(hist.history)[['loss', 'val_loss']].plot()
 
 #%%
 eval_model(yval, model.predict([xval_num, xval_cat]).flatten())

@@ -24,5 +24,8 @@ This data set is obviously not ideal: It is a snapshot of a single point in time
 ## Approach
 
 
+## Embeddings VS OHE
+- OHE: 2x the number of params (using the current embedding sizes)
+- OHE: slightly worse performance (VAL_MAP 25% vs. 23%)
+
 ## Experiments TBD
-- Compare neural net with categorical embeddings against net with OHE categories
