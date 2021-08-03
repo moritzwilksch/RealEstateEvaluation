@@ -24,7 +24,7 @@ def eval_model(ytrue, preds) -> pd.DataFrame:
     ax.axvspan(evaldf.ape.min()*100, pct_lower, color='red', alpha=0.1)
     ax.axvspan(pct_upper, evaldf.ape.max()*100, color='green', alpha=0.1)
     ax.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
-    ax.set(yticks=[], xlabel=r"% Error of model")
+    ax.set(yticks=[], xlabel=r"% Error of model", title=f"CI = [{pct_lower:.1f}; {pct_upper:.1f}]")
     sns.despine()
     plt.show()
     return evaldf

@@ -106,7 +106,7 @@ dense1 = tf.keras.layers.Dense(units=50, activation='relu', kernel_regularizer=t
 out = tf.keras.layers.Dense(units=1, activation='linear')(dense1)
 
 model = tf.keras.Model(inputs=[num_in, emb_in], outputs=[out])
-model.compile('adam', 'mean_squared_error', metrics=['mean_absolute_percentage_error'])
+model.compile('adam', 'mean_absolute_percentage_error', metrics=['mean_absolute_percentage_error'])
 
 #%%
 import time
