@@ -11,27 +11,15 @@ import seaborn as sns
 df = pd.read_parquet("../../data/ISCM.parquet", columns=['object_type', 'price', 'private_offer', 'rooms', 'sqm', 'to_rent', 'zip_code', 'year_of_construction'])
 df[['zip_code', 'to_rent', 'private_offer']] = df[['zip_code', 'to_rent', 'private_offer']].astype('category')
 
-# %%
-# NUM_COLS = ['price', 'sqm', 'year_of_construction']
-# CAT_COLS = ['object_type', 'private_offer', 'zip_code', 'rooms']
-
-# df[NUM_COLS] = df[NUM_COLS].astype('float32')
-# df[CAT_COLS] = df[CAT_COLS].astype('category')
-
 # FILTERING
 df = (
     df
-    # .loc[df.rooms.isin([1, 2, 3, 4, 5])]
-    .loc[(df.rooms < 5) & (df.rooms >= 1)]
-    .query("price <= 4000")
+    .query("rooms < 5 and rooms >= 1")
+    .query("price <= 4000 and price > 0")
     .query("sqm <= 200")
-    # .loc[df.sqm <= 300]
     .query("to_rent == True")
-    # .loc[df.to_rent == True]
     .drop('to_rent', axis=1)
 )
-
-# %%
 
 # %%
 sns.histplot(df.price, bins=25)
@@ -46,22 +34,23 @@ model.fit(xtrain, ytrain, eval_set=(xval, yval), eval_metric='MSE', early_stoppi
 
 preds = model.predict(xval)
 
-#%%
+# %%
+# deltas = np.exp(preds) - np.exp(yval.values)
 deltas = preds - yval.values
 sns.histplot(deltas)
 print(np.quantile(deltas, (0.025, 0.975)))
 
-#%%
+# %%
 comparisondf = pd.DataFrame({
     'real': yval.values,
     'pred': preds
 })
 
-#%%
+# %%
 evaldf = pd.Series(abs(deltas)).groupby(xval.rooms).agg(['mean', 'count'])
 evaldf
 
-#%%
+# %%
 
 
 evaldf = pd.Series(deltas).groupby(xval.sqm).agg(['mean', 'count'])
