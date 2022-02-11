@@ -1,0 +1,1 @@
+DB_URL = "postgresql://postgres:PG2020++@server.gs-leaders.com:9432"
